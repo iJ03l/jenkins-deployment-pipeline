@@ -39,8 +39,8 @@ spec:
       volumes:
         - name: react-app
           gitRepo:
-            repository: <REPO_URL>
-            revision: <BRANCH_OR_TAG>
+            repository: https://github.com/iJ03l/mini-portfolio
+            revision: main
             directory: /
         - name: prometheus-config
           configMap:
