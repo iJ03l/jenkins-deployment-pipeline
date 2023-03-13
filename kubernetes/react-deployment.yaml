@@ -1,9 +1,10 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
   labels:
     app: frontend
+  name: frontend
 spec:
   replicas: 2
   selector:
@@ -15,63 +16,60 @@ spec:
         app: frontend
     spec:
       containers:
-        - name: nginx
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: react-app
-              mountPath: /usr/share/nginx/html
-        - name: prometheus
-          image: prom/prometheus
-          args:
-            - "--config.file=/etc/prometheus/prometheus.yml"
-            - "--storage.tsdb.path=/prometheus/"
-            - "--web.console.libraries=/etc/prometheus/console_libraries"
-            - "--web.console.templates=/etc/prometheus/consoles"
-          ports:
-            - containerPort: 9090
-          volumeMounts:
-            - name: prometheus-config
-              mountPath: /etc/prometheus/
-            - name: prometheus-data
-              mountPath: /prometheus/
+      - image: nginx:latest
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: react-app
+      - args:
+        - --config.file=/etc/prometheus/prometheus.yml
+        - --storage.tsdb.path=/prometheus/
+        - --web.console.libraries=/etc/prometheus/console_libraries
+        - --web.console.templates=/etc/prometheus/consoles
+        image: prom/prometheus
+        name: prometheus
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - mountPath: /etc/prometheus/
+          name: prometheus-config
+        - mountPath: /prometheus/
+          name: prometheus-data
       volumes:
-        - name: react-app
-          gitRepo:
-            repository: https://github.com/iJ03l/mini-portfolio
-            revision: main
-            directory: /
-        - name: prometheus-config
-          configMap:
-            name: prometheus-config
-        - name: prometheus-data
-          emptyDir: {}
+      - gitRepo:
+          directory: /
+          repository: https://github.com/iJ03l/mini-portfolio
+          revision: main
+        name: react-app
+      - configMap:
+          name: prometheus-config
+        name: prometheus-config
+      - name: prometheus-data
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
   labels:
     app: frontend
+  name: frontend-service
 spec:
+  ports:
+  - name: http
+    port: 80
+  - name: prometheus
+    port: 9090
   selector:
     app: frontend
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-    - name: prometheus
-      port: 9090
-      targetPort: 9090
   type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
   labels:
     app: backend
+  name: backend
 spec:
   replicas: 1
   selector:
@@ -83,13 +81,12 @@ spec:
         app: backend
     spec:
       containers:
-        - name: mongodb
-          image: mongo:latest
-          ports:
-            - containerPort: 27017
-          volumeMounts:
-            - name: mongodb-data
-              mountPath: /data/db
+      - image: mongo:latest
+        name: mongodb
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongodb-data
       volumes:
-        - name: mongodb-data
-          emptyDir: {}
+      - name: mongodb-data
