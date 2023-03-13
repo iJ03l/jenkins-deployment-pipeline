@@ -11,22 +11,23 @@ pipeline {
             steps {
                 script {
                     dir('terraform') {
-                        sh "terraform init -upgrade"
-                        sh "terraform destroy -auto-approve"
+                        sh "terraform init"
+                        sh "terraform apply -auto-approve"
                     }
                 }
             }
         }
-        // stage("Deploy to EKS") {
-        //     steps {
-        //         script {
-        //             dir('kubernetes') {
-        //                 sh "aws eks update-kubeconfig --name myapp-eks-cluster"
-        //                 sh "kubectl apply -f react-deployment.yaml"
-        //                 sh "kubectl apply -f sock-shop.yaml"
-        //             }
-        //         }
-        //     }
-        // }
+        stage("Deploy to EKS") {
+            steps {
+                script {
+                    dir('kubernetes') {
+                        sh "aws eks update-kubeconfig --name myapp-eks-cluster"
+                        sh "kubectl apply -f nginx-deployment.yaml"
+                        sh "kubectl apply -f nginx-service.yaml"
+                        sh "kubectl apply -f sock-shop.yaml"
+                    }
+                }
+            }
+        }
     }
 }

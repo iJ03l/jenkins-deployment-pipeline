@@ -2,91 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: frontend
-  name: frontend
+  #the Deployment Name
+  name: my-react-app
 spec:
+  #the Number of Pods
   replicas: 2
   selector:
     matchLabels:
-      app: frontend
+      app: my-react-app
   template:
     metadata:
       labels:
-        app: frontend
+        app: my-react-app
     spec:
+      # Container Details
       containers:
-      - image: nginx:latest
-        name: nginx
+      
+      - name: my-react-app
+        # Docker Image
+        image: ij03l/mini-portfolio
+        resources:
+         #cpu and memory limit
+          limits:
+            memory: "550Mi"
+            cpu: "500m"
         ports:
-        - containerPort: 80
-        volumeMounts:
-        - mountPath: /usr/share/nginx/html
-          name: react-app
-      - args:
-        - --config.file=/etc/prometheus/prometheus.yml
-        - --storage.tsdb.path=/prometheus/
-        - --web.console.libraries=/etc/prometheus/console_libraries
-        - --web.console.templates=/etc/prometheus/consoles
-        image: prom/prometheus
-        name: prometheus
-        ports:
-        - containerPort: 9090
-        volumeMounts:
-        - mountPath: /etc/prometheus/
-          name: prometheus-config
-        - mountPath: /prometheus/
-          name: prometheus-data
-      volumes:
-      - gitRepo:
-          directory: /
-          repository: https://github.com/iJ03l/mini-portfolio
-          revision: main
-        name: react-app
-      - configMap:
-          name: prometheus-config
-        name: prometheus-config
-      - name: prometheus-data
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: frontend
-  name: frontend-service
-spec:
-  ports:
-  - name: http
-    port: 80
-  - name: prometheus
-    port: 9090
-  selector:
-    app: frontend
-  type: LoadBalancer
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: backend
-  name: backend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      containers:
-      - image: mongo:latest
-        name: mongodb
-        ports:
-        - containerPort: 27017
-        volumeMounts:
-        - mountPath: /data/db
-          name: mongodb-data
-      volumes:
-      - name: mongodb-data
+        #the port on which the app can be reached out inside the container
+        - containerPort: 3000

@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx
+        image: ij03l/mini-portfolio
         ports:
         - containerPort: 80
