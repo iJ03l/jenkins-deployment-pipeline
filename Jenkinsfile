@@ -17,20 +17,28 @@ pipeline {
     //             }
     //         }
     //     }
-        stage("Deploy to EKS") {
-            steps {
-                script {
-                    dir('kubernetes') {
-                        // sh "aws eks update-kubeconfig --name myapp-eks-cluster"
-                        // sh "kubectl apply -f nginx-deployment.yaml"
-                        // sh "kubectl apply -f nginx-service.yaml"
-                        // sh "kubectl create namespace sock-shop"
-                        // sh "kubectl apply -f sock-shop.yaml"
-                        sh "kubectl get nodes -o wide"
-                        sh "kubectl get svc"
-                    }
+    //     stage("Deploy to EKS") {
+    //         steps {
+    //             script {
+    //                 dir('kubernetes') {
+    //                     sh "aws eks update-kubeconfig --name myapp-eks-cluster"
+    //                     sh "kubectl apply -f nginx-deployment.yaml"
+    //                     sh "kubectl apply -f nginx-service.yaml"
+    //                     sh "kubectl create namespace sock-shop"
+    //                     sh "kubectl apply -f sock-shop.yaml"
+    //                 }
+    //             }
+    //         }
+    //     }
+    stages("Get EKS Nodes") {
+        steps {
+            script {
+                dir('kubernetes') {
+                    sh "kubectl get nodes -o wide"
+                    sh "kubectl get svc"
                 }
             }
         }
+    }
     }
 }
