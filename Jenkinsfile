@@ -21,7 +21,6 @@ pipeline {
             steps {
                 script {
                     dir('kubernetes') {
-                        sh "kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml"
                         sh "kubectl apply -f weave.yaml"
                         sh "aws eks update-kubeconfig --name myapp-eks-cluster"
                         sh "kubectl apply -f nginx-deployment.yaml"
