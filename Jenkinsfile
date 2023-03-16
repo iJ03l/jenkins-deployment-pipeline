@@ -21,8 +21,8 @@ pipeline {
             steps {
                 script {
                     dir('kubernetes') {
-                        sh "kubectl apply -f weave.yaml"
                         sh "aws eks update-kubeconfig --name myapp-eks-cluster"
+                        sh "kubectl apply -f weave.yaml"
                         sh "kubectl apply -f nginx-deployment.yaml"
                         sh "kubectl apply -f nginx-service.yaml"
                         sh "kubectl create namespace sock-shop"
