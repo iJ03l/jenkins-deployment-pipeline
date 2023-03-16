@@ -24,6 +24,7 @@ pipeline {
                         sh "aws eks update-kubeconfig --name myapp-eks-cluster"
                         sh "kubectl apply -f nginx-deployment.yaml"
                         sh "kubectl apply -f nginx-service.yaml"
+                        sh "kubectl create namespace sock-shop"
                         sh "kubectl apply -f sock-shop.yaml"
                     }
                 }
