@@ -31,5 +31,21 @@ pipeline {
                 }
             }
         }
+        stage("Monitoring") {
+            steps {
+                script {
+                    dir('monitoring') {
+                        sh "aws eks update-kubeconfig --name myapp-eks-cluster"
+                        sh "kubectl create namespace monitoring"
+                        sh "kubectl apply -f grafana-datasource-config.yaml"
+                        sh "kubectl apply -f deployment.yaml"
+                        sh "kubectl apply -f service.yaml"
+                        sh "kubectl apply -f clusterRole.yaml"
+                        sh "kubectl apply -f config-map.yaml"
+                        sh "kubectl apply -f prometheus-deployment.yaml"
+                    }
+                }
+            }
+        }
     }
 }
